@@ -11,7 +11,7 @@ hela_QC_maxquant <- function(){
   
   file.path <- paste0(strsplit(file.path,"txt")[[1]][1],"txt")
   
-  files <- list.files(files.dir,full.names = TRUE)
+  files <- list.files(file.path,full.names = TRUE)
   
   ######################################
   idx1 <- grep("proteinGroups",files)
