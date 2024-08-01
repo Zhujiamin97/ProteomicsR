@@ -1,0 +1,19 @@
+Package: ProteomicsR
+Type: Package
+Title: Obtain substance information in the database
+Version: 0.1.0
+Author: Jiamin Zhu
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    tidyverse,
+    data.table,
+    RaMS,
+    plotly,
+Depends: 
+    tidyverse
+RoxygenNote: 7.2.1
