@@ -1,6 +1,6 @@
 # ProteomicsR 
 
-Tool for manipulating Open source mass spectrometry databases
+A tool for simplifying proteomics data analysis
 
 ## How to install?
 
