@@ -107,7 +107,7 @@ Spectronaut_pic <- function(dpi = 600,
     query = list(ids = protein$`Protein accession`[!duplicated(protein$`Protein accession`)])
   ) %>% 
     dplyr::select(c("From","Entry.Name", "Gene.Names","Sequence")) %>% 
-    dplyr::setnames(colnames(.),c("uniprot","Entry.Name","gene","Sequence"))
+    setnames(colnames(.),c("uniprot","Entry.Name","gene","Sequence"))
   
   # Database ----------------------------------------------------------------
   AA <- aaList() %>% as.data.table() %>% setnames(colnames(.),"amino") %>% 
