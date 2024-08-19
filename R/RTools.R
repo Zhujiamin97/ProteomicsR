@@ -225,9 +225,9 @@ Spectronaut_pic <- function(dpi = 600,
     # }
     # output
     ggsave(paste("Spectrogram/",sequence$uniprot[file$sequence[n] %>% grep(sequence$Sequence)] %>% .[1],"_",file$`modify sequence`[n] %>% gsub("Z","M[Ox]",.),".pdf",sep = ""),
-           p3,dpi = dpi,width = width,height = height)
+           p3,dpi = 600,width = 7,height = 5.2)
     ggsave(paste("Spectrogram/",sequence$uniprot[file$sequence[n] %>% grep(sequence$Sequence)] %>% .[1],"_",file$`modify sequence`[n] %>% gsub("Z","M[Ox]",.),".png",sep = ""),
-           p3,dpi = dpi,width = width,height = height)
+           p3,dpi = 600,width = 7,height = 5.2)
     # fwrite(data,paste("Spectrogram/",sequensce$uniprot[file$sequence[n] %>% grep(sequence$Sequence)] %>% .[1],"_",file$`modify sequence`[n] %>% gsub("Z","M[Ox]",.),".csv",sep = ""))
   }
   unlink("readtable",recursive = T)
@@ -351,8 +351,8 @@ DIANN_pic <- function(dpi = 600,
     #   setwd(paste0(file.path,"/Results"))
     # }
     # output
-    ggsave(paste(filename,"/",lib[PeptideSequence==name] %>% .[1,1] %>% as.character(),"_",name,".pdf",sep = ""),p3,dpi = dpi,width = width,height = height)
-    ggsave(paste(filename,"/",lib[PeptideSequence==name] %>% .[1,1] %>% as.character(),"_",name,".png",sep = ""),p3,dpi = dpi,width = width,height = height)
+    ggsave(paste(filename,"/",lib[PeptideSequence==name] %>% .[1,1] %>% as.character(),"_",name,".pdf",sep = ""),p3,dpi = 600,width = 7,height = 5.2)
+    ggsave(paste(filename,"/",lib[PeptideSequence==name] %>% .[1,1] %>% as.character(),"_",name,".png",sep = ""),p3,dpi = 600,width = 7,height = 5.2)
     
   }
   message("DONE")
