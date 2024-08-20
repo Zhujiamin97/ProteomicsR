@@ -390,7 +390,7 @@ spectronaut_qc <- function(rm_modify = c("C","M"),
   if(!path %like% "XB05535B1DPST_-PTMSiteReport.tsv"){
     stop("文件选择错误!")
   }
-  dat <- read.delim(path, header = TRUE, stringsAsFactors = FALSE)  
+  dat <- data.table::fread(path)  
   #全部
   #筛选修饰 和位点准确性
   rm_mod <- paste(rm_modify,collapse = "|")
