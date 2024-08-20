@@ -378,3 +378,54 @@ DIA_Fig <- function(dpi = 600,
   }
   message("DONE!")
 }
+
+#'@title spectronaut qc
+
+spectronaut_qc <- function(rm_modify = c("C","M"),
+                           SiteProbability = 0.75){
+  
+  path <- file.choose()
+  
+  #检查文件选择是否正确
+  if(!path %like% "XB05535B1DPST_-PTMSiteReport.tsv"){
+    stop("文件选择错误!")
+  }
+  dat <- read.delim(path, header = TRUE, stringsAsFactors = FALSE)  
+  #全部
+  #筛选修饰 和位点准确性
+  rm_mod <- paste(rm_modify,collapse = "|")
+  
+  df1 <- dat %>% filter(!grepl(rm_mod, PTM.SiteAA, ignore.case = TRUE)) %>% 
+    filter(PTM.SiteProbability >= SiteProbability)
+  
+  #unique 总深度
+  df2 <- data.frame(df1$PG.ProteinNames,df1$PTM.SiteLocation) %>% unique()
+  
+  #修饰类型
+  modify <- unique(df1$PTM.ModificationTitle)
+  
+  result1 <- data.frame(info = "all", 
+                        value = nrow(df2),
+                        modify = paste(modify,collapse = ";"))
+  # 样本类型
+  samples <- unique(dat$R.Condition)
+  
+  result2 <- lapply(samples, function(x){
+    
+    #筛选修饰 和大于0.75
+    sample_df <- dat %>% filter(R.Condition == x) %>% 
+      filter(!grepl(rm_mod, PTM.SiteAA, ignore.case = TRUE)) %>% 
+      filter(PTM.SiteProbability >= SiteProbability)
+    
+    #unique 总深度
+    dat2 <- data.frame(sample_df$PG.ProteinNames,sample_df$PTM.SiteLocation) %>% unique()
+    
+    data.frame(info = x, 
+               value = nrow(dat2),
+               modify = paste(modify,collapse = ";"))
+    
+  }) %>% do.call(rbind,.)
+  
+  return(rbind(result1,result2) %>% view())
+  
+}
