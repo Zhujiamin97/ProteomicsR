@@ -381,8 +381,8 @@ DIA_Fig <- function(dpi = 600,
 
 #'@title spectronaut qc
 
-spectronaut_qc <- function(rm_modify = c("C","M"),
-                           SiteProbability = 0.75){
+spectronaut_PTM_depth <- function(rm_modify = c("C","M"),
+                                  SiteProbability = 0.75){
   
   path <- file.choose()
   
