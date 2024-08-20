@@ -12,11 +12,16 @@ install.packages("devtools")
 devtools::install_github("Zhujiamin97/ProteomicsR")
 ```
 
-## Spectronaut_pic 1.5
+## 修饰项目鉴定深度
 
 ``` r
-ProteomicsR::Spectronaut_pic(dpi = 600,
-                             width = 7,
-                             height = 5.2)
+ProteomicsR::spectronaut_PTM_depth (rm_modify = c("C","M"),
+                                    SiteProbability = 0.75)
 
+```
+
+## HELA质控
+
+``` r
+ProteomicsR::hela_QC_maxquant()
 ```
