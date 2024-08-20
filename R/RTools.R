@@ -387,7 +387,7 @@ spectronaut_PTM_depth <- function(rm_modify = c("C","M"),
   path <- file.choose()
   
   #检查文件选择是否正确
-  if(!path %like% "XB05535B1DPST_-PTMSiteReport.tsv"){
+  if(!path %like% "-PTMSiteReport.tsv"){
     stop("文件选择错误!")
   }
   dat <- data.table::fread(path)  
