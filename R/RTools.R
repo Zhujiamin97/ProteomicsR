@@ -381,7 +381,7 @@ DIA_Fig <- function(dpi = 600,
 
 #'@title spectronaut qc
 
-spectronaut_PTM_depth <- function(rm_modify = c("C","M"),
+spectronaut_PTM_depth <- function(rm_modify = NULL,
                                   SiteProbability = 0.75){
   
   path <- file.choose()
@@ -390,42 +390,58 @@ spectronaut_PTM_depth <- function(rm_modify = c("C","M"),
   if(!path %like% "-PTMSiteReport.tsv"){
     stop("文件选择错误!")
   }
-  dat <- data.table::fread(path)  
+  dat <- data.table::fread(path)
+  
   #全部
   #筛选修饰 和位点准确性
-  rm_mod <- paste(rm_modify,collapse = "|")
+  if(is.null(rm_modify)){
+    rm_mod <- "NA"
+  }else{
+    rm_mod <- paste(rm_modify,collapse = "|")
+  }
   
-  df1 <- dat %>% filter(!grepl(rm_mod, PTM.SiteAA, ignore.case = TRUE)) %>% 
+  df <- dat %>% filter(!grepl(rm_mod, PTM.SiteAA, ignore.case = TRUE)) %>% 
     filter(PTM.SiteProbability >= SiteProbability)
-  
-  #unique 总深度
-  df2 <- data.frame(df1$PG.ProteinNames,df1$PTM.SiteLocation) %>% unique()
-  
   #修饰类型
-  modify <- unique(df1$PTM.ModificationTitle)
+  modify <- unique(df$PTM.ModificationTitle)
   
-  result1 <- data.frame(info = "all", 
-                        value = nrow(df2),
-                        modify = paste(modify,collapse = ";"))
-  # 样本类型
-  samples <- unique(dat$R.Condition)
+  Results <- data.frame()
   
-  result2 <- lapply(samples, function(x){
+  for (i in modify) {
     
-    #筛选修饰 和大于0.75
-    sample_df <- dat %>% filter(R.Condition == x) %>% 
-      filter(!grepl(rm_mod, PTM.SiteAA, ignore.case = TRUE)) %>% 
-      filter(PTM.SiteProbability >= SiteProbability)
+    df1 <- df %>% filter(PTM.ModificationTitle == i)
     
     #unique 总深度
-    dat2 <- data.frame(sample_df$PG.ProteinNames,sample_df$PTM.SiteLocation) %>% unique()
+    df2 <- data.frame(df1$PG.ProteinNames,df1$PTM.SiteLocation) %>% unique()
     
-    data.frame(info = x, 
-               value = nrow(dat2),
-               modify = paste(modify,collapse = ";"))
+    result1 <- data.frame(info = "all", 
+                          value = nrow(df2),
+                          modify = i)
+    # 样本类型
+    samples <- unique(dat$R.Condition)
     
-  }) %>% do.call(rbind,.)
+    result2 <- lapply(samples, function(x){
+      
+      #筛选修饰 和大于0.75
+      sample_df <- dat %>% filter(R.Condition == x) %>% 
+        filter(!grepl(rm_mod, PTM.SiteAA, ignore.case = TRUE)) %>% 
+        filter(PTM.SiteProbability >= SiteProbability)
+      
+      sample_df <- sample_df %>% filter(PTM.ModificationTitle == i)
+      
+      #unique 总深度
+      dat2 <- data.frame(sample_df$PG.ProteinNames,sample_df$PTM.SiteLocation) %>% unique()
+      
+      data.frame(info = x, 
+                 value = nrow(dat2),
+                 modify = i)
+      
+    }) %>% do.call(rbind,.)
+    
+    Results <- rbind(Results,result1,result2)
+  }
   
-  return(rbind(result1,result2) %>% view())
+  return(Results)
   
 }
+
