@@ -455,3 +455,40 @@ spectronaut_PTM_depth <- function(filepath = NULL,
   
 }
 
+#########################################
+#需要先设置默认路径
+
+mult_spectronaut_PTM_depth <- function(){
+  
+  file.paths <- paste0(getwd(),"/",dir())
+  
+  Results <- data.frame()
+  
+  for (i in file.paths) {
+    
+    # 检索每个路径下的TSV文件
+    
+    tsv.path <- list.files(i,pattern = "-PTMSiteReport.tsv",full.names = TRUE)
+    
+    if(length(tsv.path)==0){
+      
+      tsv.path <- list.files(paste0(i,"/",dir(i)),
+                             pattern = "-PTMSiteReport.tsv",full.names = TRUE)
+      
+    }
+    
+    df <- ProteomicsR::spectronaut_PTM_depth(filepath = tsv.path)
+    
+    message("\033[31m")
+    print(tsv.path)
+    print(df)
+    message("-----------------------------------")
+    
+    dfRes <- cbind(df,tsv.path)
+    
+    Results <- rbind(Results,dfRes)
+    
+  }
+  
+}
+
