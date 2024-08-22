@@ -381,11 +381,15 @@ DIA_Fig <- function(dpi = 600,
 
 #'@title spectronaut qc
 
-spectronaut_PTM_depth <- function(rm_modify = NULL,
+spectronaut_PTM_depth <- function(filepath = NULL,
+                                  rm_modify = NULL,
                                   SiteProbability = 0.75){
   
-  path <- file.choose()
-  
+  if(is.null(filepath)){
+    path <- file.choose()
+  }else{
+    path <- filepath
+  }
   #检查文件选择是否正确
   if(!path %like% "-PTMSiteReport.tsv"){
     stop("文件选择错误!")
@@ -404,7 +408,7 @@ spectronaut_PTM_depth <- function(rm_modify = NULL,
     filter(PTM.SiteProbability >= SiteProbability)
   #修饰类型
   modify <- unique(df$PTM.ModificationTitle)
-  
+
   Results <- data.frame()
   
   for (i in modify) {
@@ -420,25 +424,31 @@ spectronaut_PTM_depth <- function(rm_modify = NULL,
     # 样本类型
     samples <- unique(dat$R.Condition)
     
-    result2 <- lapply(samples, function(x){
+    if("Not Defined" %in% samples){
       
-      #筛选修饰 和大于0.75
-      sample_df <- dat %>% filter(R.Condition == x) %>% 
-        filter(!grepl(rm_mod, PTM.SiteAA, ignore.case = TRUE)) %>% 
-        filter(PTM.SiteProbability >= SiteProbability)
+      Results <- rbind(Results,result1)
       
-      sample_df <- sample_df %>% filter(PTM.ModificationTitle == i)
+    }else{
       
-      #unique 总深度
-      dat2 <- data.frame(sample_df$PG.ProteinNames,sample_df$PTM.SiteLocation) %>% unique()
-      
-      data.frame(info = x, 
-                 value = nrow(dat2),
-                 modify = i)
-      
-    }) %>% do.call(rbind,.)
-    
-    Results <- rbind(Results,result1,result2)
+      result2 <- lapply(samples, function(x){
+        
+        #筛选修饰 和大于0.75
+        sample_df <- dat %>% filter(R.Condition == x) %>% 
+          filter(!grepl(rm_mod, PTM.SiteAA, ignore.case = TRUE)) %>% 
+          filter(PTM.SiteProbability >= SiteProbability)
+        
+        sample_df <- sample_df %>% filter(PTM.ModificationTitle == i)
+        
+        #unique 总深度
+        dat2 <- data.frame(sample_df$PG.ProteinNames,sample_df$PTM.SiteLocation) %>% unique()
+        
+        data.frame(info = x, 
+                   value = nrow(dat2),
+                   modify = i)
+        
+      }) %>% do.call(rbind,.)
+      Results <- rbind(Results,result1,result2)
+    }
   }
   
   return(Results)
