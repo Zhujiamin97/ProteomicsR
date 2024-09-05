@@ -14,7 +14,15 @@ MetaboScape_select_name <- function(){
   #negative
   if(file.exists("neg_quant.xlsx")){
     
-    neg_quant <- read_xlsx("neg_quant.xlsx")
+    neg_quant <- readxl::read_xlsx("neg_quant.xlsx")
+    
+    colnames(neg_quant)[-c(1:12)] <- lapply(colnames(neg_quant[,-c(1:12)]),function(x){
+      if(x %like% "_2-"){
+        t <- gsub("\\_2-.*", "",x)
+      }else if(x %like% "_1-"){
+        t <- gsub("\\_1-.*", "",x)
+      }
+    }) %>% unlist()
     
     if(nrow(list) != ncol(neg_quant[,-c(1:12)])){
       stop("请检查列表名称是否数量相等！！")
@@ -32,7 +40,16 @@ MetaboScape_select_name <- function(){
   # positive
   if(file.exists("pos_quant.xlsx")){
     
-    pos_quant <- read_xlsx("pos_quant.xlsx")
+    pos_quant <- readxl::read_xlsx("pos_quant.xlsx")
+    
+    # 改列名
+    colnames(pos_quant)[-c(1:12)] <- lapply(colnames(pos_quant[,-c(1:12)]),function(x){
+      if(x %like% "_2-"){
+        gsub("\\_2-.*", "",x)
+      }else if(x %like% "_1-"){
+        gsub("\\_1-.*", "",x)
+      }
+    }) %>% unlist()
     
     if(nrow(list) != ncol(pos_quant[,-c(1:12)])){
       stop("请检查列表名称是否数量相等！！")
